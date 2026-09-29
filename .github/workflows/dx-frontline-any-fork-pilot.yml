@@ -1,0 +1,76 @@
+name: DX Frontline new any fork pilot
+
+on:
+  push:
+    branches:
+      - feat/dx-frontline-any-rollout
+
+permissions:
+  contents: read
+
+jobs:
+  new-any-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out fork branch with history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify diff parser and ESLint filter
+        run: node scripts/check-new-any.mjs --self-test
+
+      - name: Check actual branch changes against current main
+        run: node scripts/check-new-any.mjs f465fa7416f392bf56981c9c080c0aa476a531ad
+
+      - name: Experiment 1 - existing any does not block a typed addition
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_base=$(git rev-parse HEAD)
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          grep -q '\[key: string\]: any;' "$probe"
+          git config user.name 'DX Gate Test'
+          git config user.email 'dx-gate-test@example.invalid'
+          printf '\nexport const dxGateTypedProbe: number = 1;\n' >> "$probe"
+          git add "$probe"
+          git commit -m 'test: add runner-only typed probe'
+          node scripts/check-new-any.mjs "$test_base"
+          echo '::notice::Experiment 1 passed: existing any did not block a typed addition.'
+
+      - name: Experiment 2 - new any is rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_base=${{ github.sha }}
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          printf 'export const dxGateAnyProbe: any = 1;\n' >> "$probe"
+          probe_line=$(wc -l < "$probe" | tr -d ' ')
+          git add "$probe"
+          git commit -m 'test: add runner-only any probe'
+          if output=$(node scripts/check-new-any.mjs "$test_base" 2>&1); then
+            echo '::error::Experiment 2 failed: the gate accepted a new explicit any.'
+            exit 1
+          fi
+          printf '%s\n' "$output"
+          if [[ "$output" != *"$probe:$probe_line:"* ]]; then
+            echo '::error::Experiment 2 failed for a reason other than the new any probe.'
+            exit 1
+          fi
+          echo '::notice::Experiment 2 passed: the gate rejected the new explicit any.'
