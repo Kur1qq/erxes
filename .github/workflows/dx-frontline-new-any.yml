@@ -34,5 +34,34 @@ jobs:
       - name: Verify new-any gate
         run: node scripts/check-new-any.mjs --self-test
 
+      - name: Verify Git diff gate rejects and accepts changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_base=$(git rev-parse HEAD)
+          probe=frontend/plugins/frontline_ui/src/__dx_new_any_probe__.ts
+          git config user.name 'DX Gate Test'
+          git config user.email 'dx-gate-test@example.invalid'
+
+          # These commits exist only inside this disposable Actions runner.
+          printf 'export const dxGateProbe: any = 1;\n' > "$probe"
+          git add "$probe"
+          git commit -m 'test: add temporary explicit any probe'
+          if output=$(node scripts/check-new-any.mjs "$test_base" 2>&1); then
+            echo '::error::The gate accepted a new explicit any'
+            exit 1
+          fi
+          printf '%s\n' "$output"
+          if [[ "$output" != *"${probe}:1:"* ]]; then
+            echo '::error::The gate failed for a reason other than the probe'
+            exit 1
+          fi
+
+          printf 'export const dxGateProbe: number = 1;\n' > "$probe"
+          git add "$probe"
+          git commit -m 'test: type the temporary probe'
+          node scripts/check-new-any.mjs "$test_base"
+          git switch --detach "$test_base"
+
       - name: Check changed frontline UI lines
         run: node scripts/check-new-any.mjs 824d94024541109321f8bf43ef2e8c274458b2b5
