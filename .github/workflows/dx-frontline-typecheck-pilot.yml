@@ -1,0 +1,81 @@
+name: DX Frontline UI typecheck pilot
+
+on:
+  push:
+    branches:
+      - feat/dx-frontline-typecheck-pilot
+
+permissions:
+  contents: read
+
+jobs:
+  frontline-typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck and report
+        id: typecheck
+        shell: bash
+        run: |
+          log="$RUNNER_TEMP/frontline-typecheck.log"
+          set +e
+          pnpm exec tsc --noEmit --pretty false -p frontend/plugins/frontline_ui/tsconfig.app.json > "$log" 2>&1
+          status=$?
+          set -e
+
+          cat "$log"
+          total=$(grep -cE '^[^[:space:]]+\([0-9]+,[0-9]+\): error TS[0-9]+:' "$log" || true)
+          frontline=$(grep -cE '^frontend/plugins/frontline_ui/.*error TS[0-9]+:' "$log" || true)
+          erxes_ui=$(grep -cE '^frontend/libs/erxes-ui/.*error TS[0-9]+:' "$log" || true)
+          ui_modules=$(grep -cE '^frontend/libs/ui-modules/.*error TS[0-9]+:' "$log" || true)
+
+          if [ "$status" -ne 0 ] && [ "$total" -eq 0 ]; then
+            echo 'Typecheck failed without source diagnostics; this is a CI/setup failure.' >&2
+            exit "$status"
+          fi
+
+          {
+            echo '## Frontline UI typecheck (report only)'
+            echo "Commit: \`$GITHUB_SHA\`"
+            echo "TypeScript exit code: $status"
+            echo
+            echo '| Location | Diagnostics |'
+            echo '| --- | ---: |'
+            echo "| All files | $total |"
+            echo "| frontline_ui | $frontline |"
+            echo "| erxes-ui | $erxes_ui |"
+            echo "| ui-modules | $ui_modules |"
+            echo
+            echo 'Existing TypeScript diagnostics are reported but do not fail this pilot.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$status" -ne 0 ]; then
+            echo "::warning::Frontline UI typecheck found $total diagnostics (report only)."
+          fi
+
+      - name: Upload typecheck log
+        if: ${{ always() && steps.typecheck.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontline-ui-typecheck-log
+          path: ${{ runner.temp }}/frontline-typecheck.log
+          if-no-files-found: error
+          retention-days: 7
