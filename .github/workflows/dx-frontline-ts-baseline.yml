@@ -1,0 +1,89 @@
+name: DX Frontline TypeScript baseline (fork)
+
+on:
+  push:
+    branches:
+      - feat/dx-frontline-ts-baseline
+  pull_request:
+    branches:
+      - feat/dx-frontline-pr-base
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs:
+  frontline-typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out branch or PR merge commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Reject TypeScript diagnostic growth
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/frontline-typecheck-check.log"
+          set +e
+          node scripts/check-frontline-typecheck.mjs --check --report "$RUNNER_TEMP/frontline-typecheck.json" > "$log" 2>&1
+          status=$?
+          set -e
+          cat "$log"
+          {
+            echo '## Frontline UI TypeScript baseline'
+            echo '```text'
+            cat "$log"
+            echo '```'
+            echo 'The gate rejects increases in file + TS code + primary message counts; it cannot identify every new error while old errors remain.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: Upload TypeScript diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontline-ui-typecheck-baseline
+          path: |
+            ${{ runner.temp }}/frontline-typecheck-check.log
+            ${{ runner.temp }}/frontline-typecheck.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Prove runner-only TypeScript error is rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          printf '\nexport const dxTypecheckProbe: string = 123;\n' >> "$probe"
+          if output=$(node scripts/check-frontline-typecheck.mjs --check 2>&1); then
+            echo '::error::The baseline gate accepted a new TypeScript error.'
+            exit 1
+          fi
+          if [[ "$output" != *"$probe TS2322"* ]]; then
+            printf '%s\n' "$output"
+            echo '::error::The gate failed for a reason other than the TypeScript probe.'
+            exit 1
+          fi
+          git restore -- "$probe"
+          node scripts/check-frontline-typecheck.mjs --check
+          echo '::notice::The gate rejected a runner-only TS2322 error and passed again after restoring the file.'
