@@ -1,0 +1,163 @@
+name: DX Frontline PR preflight (fork)
+
+on:
+  push:
+    branches:
+      - feat/dx-frontline-pr-ready
+  pull_request:
+    branches:
+      - feat/dx-frontline-pr-base
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs:
+  frontline-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out branch or PR merge commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify new-any gate self-test
+        run: node scripts/check-new-any.mjs --self-test
+
+      - name: Typecheck and report existing diagnostics
+        id: typecheck
+        shell: bash
+        run: |
+          log="$RUNNER_TEMP/frontline-typecheck.log"
+          set +e
+          pnpm exec tsc --noEmit --pretty false -p frontend/plugins/frontline_ui/tsconfig.app.json > "$log" 2>&1
+          status=$?
+          set -e
+
+          total=$(grep -cE '^[^[:space:]]+\([0-9]+,[0-9]+\): error TS[0-9]+:' "$log" || true)
+          frontline=$(grep -cE '^frontend/plugins/frontline_ui/.*error TS[0-9]+:' "$log" || true)
+          erxes_ui=$(grep -cE '^frontend/libs/erxes-ui/.*error TS[0-9]+:' "$log" || true)
+          ui_modules=$(grep -cE '^frontend/libs/ui-modules/.*error TS[0-9]+:' "$log" || true)
+
+          if [ "$status" -ne 0 ] && [ "$total" -eq 0 ]; then
+            echo 'Typecheck failed without source diagnostics; this is a CI/setup failure.' >&2
+            exit "$status"
+          fi
+
+          {
+            echo '## Frontline UI typecheck (report only)'
+            echo "Commit: \`$GITHUB_SHA\`"
+            echo "TypeScript exit code: $status"
+            echo
+            echo '| Location | Local baseline | CI diagnostics |'
+            echo '| --- | ---: | ---: |'
+            echo "| All files | 70 | $total |"
+            echo "| frontline_ui | 27 | $frontline |"
+            echo "| erxes-ui | 19 | $erxes_ui |"
+            echo "| ui-modules | 24 | $ui_modules |"
+            echo
+            echo 'Existing TypeScript diagnostics are informational in this fork pilot.'
+            echo 'Download the `frontline-ui-typecheck-log` artifact for file-level diagnostics.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$total" -ne 70 ] || [ "$frontline" -ne 27 ] || [ "$erxes_ui" -ne 19 ] || [ "$ui_modules" -ne 24 ]; then
+            echo "::warning::CI typecheck count differs from local baseline: total=$total, frontline=$frontline, erxes-ui=$erxes_ui, ui-modules=$ui_modules."
+          elif [ "$status" -ne 0 ]; then
+            echo '::notice::CI reproduced the 70 existing TypeScript diagnostics (report only).'
+          fi
+
+      - name: Upload typecheck log
+        if: ${{ always() && steps.typecheck.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontline-ui-typecheck-log
+          path: ${{ runner.temp }}/frontline-typecheck.log
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Reject new explicit any in changed Frontline lines
+        env:
+          DX_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || 'af31f785719a349369bd2785fbd71ca24dd38405' }}
+        run: node scripts/check-new-any.mjs "$DX_BASE_SHA"
+
+      - name: Experiment 3 - PR base rejects runner-only new any
+        if: github.event_name == 'pull_request'
+        env:
+          DX_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          git config user.name 'DX Gate Test'
+          git config user.email 'dx-gate-test@example.invalid'
+          printf '\nexport const dxPrGateProbe: any = 1;\n' >> "$probe"
+          probe_line=$(wc -l < "$probe" | tr -d ' ')
+          git add "$probe"
+          git commit -m 'test: add runner-only PR any probe'
+          if output=$(node scripts/check-new-any.mjs "$DX_BASE_SHA" 2>&1); then
+            echo '::error::PR experiment failed: the gate accepted a new explicit any.'
+            exit 1
+          fi
+          printf '%s\n' "$output"
+          if [[ "$output" != *'New explicit any in frontline_ui:'* ]] || [[ "$output" != *"$probe:$probe_line:"* ]]; then
+            echo '::error::PR experiment failed for a reason other than the new any probe.'
+            exit 1
+          fi
+          echo '::notice::PR experiment passed: the gate rejected a runner-only new any using the PR base SHA.'
+
+      - name: Experiment 1 - old any does not block a typed addition
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_base=$(git rev-parse HEAD)
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          grep -q '\[key: string\]: any;' "$probe"
+          git config user.name 'DX Gate Test'
+          git config user.email 'dx-gate-test@example.invalid'
+          printf '\nexport const dxGateTypedProbe: number = 1;\n' >> "$probe"
+          git add "$probe"
+          git commit -m 'test: add runner-only typed probe'
+          node scripts/check-new-any.mjs "$test_base"
+          echo '::notice::Experiment 1 passed: old any did not block a typed addition.'
+
+      - name: Experiment 2 - new any is rejected
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test_base="$GITHUB_SHA"
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          printf 'export const dxGateAnyProbe: any = 1;\n' >> "$probe"
+          probe_line=$(wc -l < "$probe" | tr -d ' ')
+          git add "$probe"
+          git commit -m 'test: add runner-only any probe'
+          if output=$(node scripts/check-new-any.mjs "$test_base" 2>&1); then
+            echo '::error::Experiment 2 failed: the gate accepted a new explicit any.'
+            exit 1
+          fi
+          printf '%s\n' "$output"
+          if [[ "$output" != *"$probe:$probe_line:"* ]]; then
+            echo '::error::Experiment 2 failed for a reason other than the new any probe.'
+            exit 1
+          fi
+          echo '::notice::Experiment 2 passed: the gate rejected the new explicit any.'

@@ -1636,3 +1636,13 @@ status })` returns the leaving side as `canMoveTicket` (what disables the
   open a Call Pro conversation — the recording plays, and a conversation with
   several candidates shows the picker until a customer is chosen, after which
   the picker is replaced by the confirm/switch control without a reload.
+
+## Recent Changes
+
+<!-- Newest first. Keep at most 10 entries. -->
+
+### `2026-09-30` — Fork-only CI negative probe
+
+- **Summary:** A disposable test branch contains one explicit `any` and one TypeScript assignment error to verify PR checks reject both.
+- **Affected areas:** `src/dx-ci-negative-probe.ts`
+- **Contracts changed:** None
