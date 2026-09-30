@@ -9,8 +9,11 @@ const baselinePath = join(root, 'scripts/baselines/frontline-ui-typecheck.json')
 const configPath = join(root, project);
 
 function normalizeMessage(diagnostic) {
-  return ts
-    .flattenDiagnosticMessageText(diagnostic.messageText, ' ')
+  // Nested type explanations can render differently across machines for the same error.
+  const message = typeof diagnostic.messageText === 'string'
+    ? diagnostic.messageText
+    : diagnostic.messageText.messageText;
+  return message
     .replaceAll(root, '<repo>')
     .replaceAll('\\', '/')
     .replace(/\s+/g, ' ')

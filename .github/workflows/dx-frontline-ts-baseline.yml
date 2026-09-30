@@ -54,7 +54,7 @@ jobs:
             echo '```text'
             cat "$log"
             echo '```'
-            echo 'The gate rejects increases in file + TS code + message counts; it cannot identify every new error while old errors remain.'
+            echo 'The gate rejects increases in file + TS code + primary message counts; it cannot identify every new error while old errors remain.'
           } >> "$GITHUB_STEP_SUMMARY"
           exit "$status"
 
