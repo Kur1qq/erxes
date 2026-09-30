@@ -99,6 +99,31 @@ jobs:
           DX_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || 'af31f785719a349369bd2785fbd71ca24dd38405' }}
         run: node scripts/check-new-any.mjs "$DX_BASE_SHA"
 
+      - name: Experiment 3 - PR base rejects runner-only new any
+        if: github.event_name == 'pull_request'
+        env:
+          DX_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          probe=frontend/plugins/frontline_ui/src/modules/inbox/types/inbox.ts
+          git config user.name 'DX Gate Test'
+          git config user.email 'dx-gate-test@example.invalid'
+          printf '\nexport const dxPrGateProbe: any = 1;\n' >> "$probe"
+          probe_line=$(wc -l < "$probe" | tr -d ' ')
+          git add "$probe"
+          git commit -m 'test: add runner-only PR any probe'
+          if output=$(node scripts/check-new-any.mjs "$DX_BASE_SHA" 2>&1); then
+            echo '::error::PR experiment failed: the gate accepted a new explicit any.'
+            exit 1
+          fi
+          printf '%s\n' "$output"
+          if [[ "$output" != *'New explicit any in frontline_ui:'* ]] || [[ "$output" != *"$probe:$probe_line:"* ]]; then
+            echo '::error::PR experiment failed for a reason other than the new any probe.'
+            exit 1
+          fi
+          echo '::notice::PR experiment passed: the gate rejected a runner-only new any using the PR base SHA.'
+
       - name: Experiment 1 - old any does not block a typed addition
         if: github.event_name == 'push'
         shell: bash
