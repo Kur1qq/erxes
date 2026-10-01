@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "project": "frontend/plugins/frontline_ui/tsconfig.app.json",
+  "baseCommit": "af31f785719a349369bd2785fbd71ca24dd38405",
+  "typescriptVersion": "5.7.3",
+  "total": 70,
+  "diagnostics": [
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 2339,
+      "message": "Property 'label' does not exist on type 'Omit<Props<ValueType, NameType>, PropertiesReadFromContext> & { active?: boolean | undefined; includeHidden?: boolean | undefined; ... 17 more ...; axisId?: AxisId | undefined; } & ClassAttributes<...> & HTMLAttributes<...> & { ...; }'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 2339,
+      "message": "Property 'length' does not exist on type '{}'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 2339,
+      "message": "Property 'map' does not exist on type '{}'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 2339,
+      "message": "Property 'payload' does not exist on type 'Omit<Props<ValueType, NameType>, PropertiesReadFromContext> & { active?: boolean | undefined; includeHidden?: boolean | undefined; ... 17 more ...; axisId?: AxisId | undefined; } & ClassAttributes<...> & HTMLAttributes<...> & { ...; }'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 2344,
+      "message": "Type '\"payload\" | \"verticalAlign\"' does not satisfy the constraint '\"string\" | \"children\" | \"style\" | \"clipPath\" | \"filter\" | \"mask\" | \"path\" | \"key\" | \"suppressHydrationWarning\" | \"className\" | \"id\" | \"lang\" | \"tabIndex\" | \"role\" | \"content\" | ... 423 more ... | \"onBBoxUpdate\"'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 7006,
+      "message": "Parameter 'index' implicitly has an 'any' type.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/components/charts.tsx",
+      "code": 7006,
+      "message": "Parameter 'item' implicitly has an 'any' type.",
+      "count": 2
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/index.ts",
+      "code": 2308,
+      "message": "Module './modules' has already exported a member named 'IAttachment'. Consider explicitly re-exporting to resolve the ambiguity.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/blocks/components/CustomFileBlock.tsx",
+      "code": 2322,
+      "message": "Type 'FileRenderProps' is not assignable to type 'FileWrapperRenderProps'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/blocks/components/ImageStyleButton.tsx",
+      "code": 2305,
+      "message": "Module '\"@tabler/icons-react\"' has no exported member 'TablerIconsProps'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/blocks/components/ImageStyleButton.tsx",
+      "code": 2322,
+      "message": "Type 'ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>' is not assignable to type 'IconComponent'.",
+      "count": 4
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/blocks/components/ImageStyleButton.tsx",
+      "code": 2353,
+      "message": "Object literal may only specify known properties, and 'imageStyle' does not exist in type 'Partial<Props<{ backgroundColor: { default: \"default\"; }; name: { default: \"\"; }; url: { default: \"\"; }; caption: { default: \"\"; }; showPreview: { default: true; }; }>> | Partial<Props<{ textColor: { ...; }; }>> | ... 10 more ... | Partial<...>'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/email-editor/components/EmailEditor.tsx",
+      "code": 2322,
+      "message": "Type '(file: File) => Promise<string>' is not assignable to type '(file: Blob) => Promise<string>'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/inputs/contexts/PhoneFieldsContext.tsx",
+      "code": 2305,
+      "message": "Module '\"../components/PhoneField\"' has no exported member 'IPhoneStatus'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/erxes-ui/src/modules/motion/components/TextEffect.tsx",
+      "code": 2353,
+      "message": "Object literal may only specify known properties, and 'blur' does not exist in type 'Record<PresetType, { container: Variants; item: Variants; }>'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/automations/components/AutomationRemoteEntryWrapper.tsx",
+      "code": 2322,
+      "message": "Type 'AutomationRemoteEntryTypes[T]' is not assignable to type 'IntrinsicAttributes & AutomationRemoteEntryTypes[T]'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/automations/hooks/useAutomationVariableCodeMirrorDrop.ts",
+      "code": 2345,
+      "message": "Argument of type 'DataTransfer | null' is not assignable to parameter of type 'DataTransfer'.",
+      "count": 2
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/automations/hooks/useAutomationVariableCodeMirrorDrop.ts",
+      "code": 18047,
+      "message": "'event.dataTransfer' is possibly 'null'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/automations/utils/automationVariableBlockEditorUtils.ts",
+      "code": 2322,
+      "message": "Type '{ name: string; value: string; }' is not assignable to type 'Props<{ name: { default: string; }; value: { default: string; }; width: { default: number; }; height: { default: number; }; }> | Props<{ fullName: { default: string; }; _id: { default: string; }; }> | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/contacts/components/CustomerOwner.tsx",
+      "code": 2322,
+      "message": "Type 'string | string[] | null' is not assignable to type 'string | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/documents/components/AttributeInEditor.tsx",
+      "code": 2322,
+      "message": "Type '{ name: string; value: any; }' is not assignable to type 'Props<{ name: { default: string; }; value: { default: string; }; width: { default: number; }; height: { default: number; }; }> | Props<{ fullName: { default: string; }; _id: { default: string; }; }> | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/documents/components/SelectDocument.tsx",
+      "code": 2305,
+      "message": "Module '\"erxes-ui\"' has no exported member 'RecordTableCellContent'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/documents/components/SelectDocument.tsx",
+      "code": 2305,
+      "message": "Module '\"erxes-ui\"' has no exported member 'RecordTableCellTrigger'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/documents/components/SelectDocument.tsx",
+      "code": 2305,
+      "message": "Module '\"erxes-ui\"' has no exported member 'RecordTablePopover'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/documents/utils/qzTray.ts",
+      "code": 2322,
+      "message": "Type 'void | null' is not assignable to type 'void'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/documents/utils/qzTray.ts",
+      "code": 7016,
+      "message": "Could not find a declaration file for module 'qz-tray'. '<repo>/node_modules/.pnpm/qz-tray@2.2.6/node_modules/qz-tray/qz-tray.js' implicitly has an 'any' type.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/internal-notes/components/AddInternalNote.tsx",
+      "code": 2345,
+      "message": "Argument of type 'Block<BlockSchemaFromSpecs<{ image: { config: { propSchema: { imageStyle: { default: \"normal\"; values: readonly [\"normal\", \"wide\", \"float-left\", \"float-right\"]; }; textAlignment: { default: \"left\"; values: readonly [\"left\", \"center\", \"right\", \"justify\"]; }; ... 5 more ...; previewWidth: { ...; }; }; type: \"image\"; c...' is not assignable to parameter of type 'readonly Block[]'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags-new/utils/getTagTypeDescription.ts",
+      "code": 7016,
+      "message": "Could not find a declaration file for module 'lodash'. '<repo>/node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/lodash.js' implicitly has an 'any' type.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/CreateTagForm.tsx",
+      "code": 2322,
+      "message": "Type '{ children: Element; tagType: string; value: string | undefined; onValueChange: (tag: string | string[]) => void; }' is not assignable to type 'IntrinsicAttributes & Omit<ISelectTagsProviderProps, \"children\"> & Omit<Omit<Omit<ButtonProps & RefAttributes<HTMLButtonElement>, \"ref\"> & { ...; } & RefAttributes<...>, \"ref\">, \"children\"> & { ...; } & RefAttributes<...>'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/CreateTagForm.tsx",
+      "code": 2353,
+      "message": "Object literal may only specify known properties, and 'order' does not exist in type 'ITag'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/SelectTags.tsx",
+      "code": 2345,
+      "message": "Argument of type '(string | undefined)[]' is not assignable to parameter of type 'string[]'.",
+      "count": 2
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/TagsColumns.tsx",
+      "code": 2459,
+      "message": "Module '\"ui-modules/modules/tags/types/Tag\"' declares 'ITag' locally, but it is not exported.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/TagsColumns.tsx",
+      "code": 2724,
+      "message": "'\"ui-modules/modules/tags/types/Tag\"' has no exported member named 'ITagQueryResponse'. Did you mean 'TTagQueryResponse'?",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/TagsRecordTable.tsx",
+      "code": 2339,
+      "message": "Property 'order' does not exist on type '{ hasChildren: boolean; _id: string; name: string; type: string | null; colorCode?: string | undefined; createdAt?: string | undefined; objectCount?: number | undefined; parentId?: string | undefined; ... 4 more ...; __typename?: \"Tag\" | undefined; }'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/components/TagsRecordTable.tsx",
+      "code": 2459,
+      "message": "Module '\"ui-modules/modules/tags/types/Tag\"' declares 'ITag' locally, but it is not exported.",
+      "count": 1
+    },
+    {
+      "file": "frontend/libs/ui-modules/src/modules/tags/hooks/useTags.tsx",
+      "code": 2339,
+      "message": "Property 'order' does not exist on type '{ hasChildren: boolean; _id: string; name: string; type: string | null; colorCode?: string | undefined; createdAt?: string | undefined; objectCount?: number | undefined; parentId?: string | undefined; ... 4 more ...; __typename?: \"Tag\" | undefined; }'.",
+      "count": 2
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/channels/components/settings/channel-details/UpdateChannelForm.tsx",
+      "code": 2322,
+      "message": "Type 'string | null | undefined' is not assignable to type 'string | (readonly string[] & string) | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversation-messages/hooks/useConversationMessages.tsx",
+      "code": 2448,
+      "message": "Block-scoped variable 'conversationId' used before its declaration.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/components/ProgressByAssignee.tsx",
+      "code": 2322,
+      "message": "Type 'string | undefined' is not assignable to type 'string'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/components/ProgressSource.tsx",
+      "code": 2322,
+      "message": "Type 'string | undefined' is not assignable to type 'string'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/components/ProgressTag.tsx",
+      "code": 2322,
+      "message": "Type 'string | undefined' is not assignable to type 'string'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/components/ResponseTemplateSelector.tsx",
+      "code": 2305,
+      "message": "Module '\"@/responseTemplate/types\"' has no exported member 'TViewMode'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/components/ResponseTemplateSelector.tsx",
+      "code": 2349,
+      "message": "This expression is not callable.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/components/ResponseTemplateSelector.tsx",
+      "code": 7006,
+      "message": "Parameter 'prev' implicitly has an 'any' type.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/hooks/useResponseTemplateSuggestions.ts",
+      "code": 2322,
+      "message": "Type '{}' is not assignable to type 'Props<{ backgroundColor: { default: \"default\"; }; name: { default: \"\"; }; url: { default: \"\"; }; caption: { default: \"\"; }; showPreview: { default: true; }; }> | Props<{ textColor: { default: \"default\"; }; }> | ... 10 more ... | Props<...>'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/hooks/useResponseTemplateSuggestions.ts",
+      "code": 2322,
+      "message": "Type 'Block[] | { type: \"paragraph\"; content: string; props: {}; }[]' is not assignable to type 'Block[]'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/conversation-detail/hooks/useResponseTemplateSuggestions.ts",
+      "code": 2322,
+      "message": "Type 'string' is not assignable to type 'TableContent<InlineContentSchemaFromSpecs<{ text: { config: \"text\"; implementation: any; }; link: { config: \"link\"; implementation: any; }; }>, StyleSchemaFromSpecs<{ bold: { config: { type: string; propSchema: \"boolean\"; }; implementation: StyleImplementation; }; ... 5 more ...; backgroundColor: { ...; }; }>> | (Li...'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/inbox/conversations/hooks/useConversationCustomFieldEdit.tsx",
+      "code": 2322,
+      "message": "Type '{ conversationEditCustomFields: { __typename: \"Conversation\"; _id: string; propertiesData: Record<string, unknown>; }; }' is not assignable to type 'IConversationEditCustomFieldsResponse | ((vars: IConversationEditCustomFieldsVariables, { IGNORE }: { ...; }) => IgnoreModifier | IConversationEditCustomFieldsResponse) | undefined'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/pipelines/components/permissions/components/PipelinePermissionsList.tsx",
+      "code": 2741,
+      "message": "Property 'propertyIds' is missing in type '{ _id: string; dayAfterCreated: boolean; branchOnly: boolean; myTicketsOnly: boolean; departmentOnly: boolean; selectedUsers: string[]; visibility: \"public\" | \"private\"; memberIds: string[]; }' but required in type 'PermissionState'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/status/components/StatusSheet.tsx",
+      "code": 18048,
+      "message": "'editingStatus' is possibly 'undefined'.",
+      "count": 2
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/ticket/components/TicketPageEffect.tsx",
+      "code": 2339,
+      "message": "Property 'Tickets' does not exist on type 'typeof FrontlinePaths'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/modules/ticket/hooks/useTaskView.tsx",
+      "code": 2724,
+      "message": "'\"@/ticket/states/ticketViewState\"' has no exported member named 'ticketsViewAtom'. Did you mean 'ticketViewAtom'?",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/pages/IntegrationDetailPage.tsx",
+      "code": 2551,
+      "message": "Property 'description' does not exist on type '{ name: string; descriptionKey: string; img: string; } | { name: string; descriptionKey: string; img: string; } | { name: string; descriptionKey: string; img: string; } | { name: string; descriptionKey: string; img: string; } | ... 4 more ... | { ...; }'. Did you mean 'descriptionKey'?",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/components/message/MessageTriggerConditionsList.tsx",
+      "code": 2345,
+      "message": "Argument of type 'string' is not assignable to parameter of type '\"persistentMenu\" | \"getStarted\" | \"iceBreaker\" | \"direct\" | \"open_thread\"'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/components/message/MessageTriggerConfigPanel.tsx",
+      "code": 2322,
+      "message": "Type '\"all\" | \"specific\"' is not assignable to type 'never'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/components/message/MessageTriggerConfigPanel.tsx",
+      "code": 2322,
+      "message": "Type 'string[]' is not assignable to type 'never'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/components/message/OpenThreadTriggerEditor.tsx",
+      "code": 2322,
+      "message": "Type 'never[]' is not assignable to type 'never'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/components/message/OpenThreadTriggerEditor.tsx",
+      "code": 2322,
+      "message": "Type 'string' is not assignable to type 'never'.",
+      "count": 2
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/hooks/useCommentTriggerForm.ts",
+      "code": 2783,
+      "message": "'postType' is specified more than once, so this usage will be overwritten.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/hooks/useOpenThreadTriggerEditor.ts",
+      "code": 2322,
+      "message": "Type 'never[]' is not assignable to type 'never'.",
+      "count": 1
+    },
+    {
+      "file": "frontend/plugins/frontline_ui/src/widgets/automations/modules/facebook/components/trigger/hooks/useOpenThreadTriggerEditor.ts",
+      "code": 2345,
+      "message": "Argument of type 'string[]' is not assignable to parameter of type 'never'.",
+      "count": 1
+    }
+  ]
+}
