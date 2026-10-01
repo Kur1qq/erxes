@@ -1,0 +1,49 @@
+name: DX Frontline API Promise lint pilot (fork)
+
+on:
+  pull_request:
+    branches:
+      - feat/dx-frontline-ci-clean
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs:
+  frontline-api-floating-pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out PR merge commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Report Frontline API floating promises
+        run: node scripts/report-frontline-api-floating-promises.mjs --report "$RUNNER_TEMP/frontline-api-floating-promises.json"
+
+      - name: Upload finding locations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontline-api-floating-promises
+          path: ${{ runner.temp }}/frontline-api-floating-promises.json
+          if-no-files-found: warn
+          retention-days: 7
