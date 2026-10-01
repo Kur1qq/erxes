@@ -22,6 +22,8 @@ const result = spawnSync(
     '{"projectService":true}',
     '--rule',
     `${rule}:error`,
+    '--rule',
+    '@nx/enforce-module-boundaries:off',
     '--format',
     'json',
     `${sourceRoot}**/*.{ts,tsx}`,
@@ -40,7 +42,10 @@ try {
   reports = JSON.parse(result.stdout);
 } catch {
   throw new Error(
-    `Could not read ESLint JSON: ${result.stderr || result.stdout}`,
+    `Could not read ESLint JSON: ${(result.stderr || result.stdout).slice(
+      0,
+      1000,
+    )}`,
   );
 }
 
