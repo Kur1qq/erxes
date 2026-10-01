@@ -6,7 +6,7 @@
 - **Project:** `frontline_api`
 - **Layer:** `Backend API`
 - **Path:** `backend/plugins/frontline_api`
-- **Last synchronized:** `2026-09-28`
+- **Last synchronized:** `2026-10-01`
 
 ## Scope
 
@@ -860,6 +860,15 @@ isInternal)` is the agent-side list and requires `showTickets`.
   `automations.trigger`, not `triggers.trigger`; `sendTRPCMessage` swallows a
   wrong path or a query/mutation mismatch and returns `defaultValue`, so a
   typo here fails silently.
+
+## Data and State
+
+- Tenant-owned models are created for the request `subdomain` through
+  `src/connectionResolvers.ts`.
+
+## Local Invariants
+
+- Keep all model access scoped to the request `subdomain`.
 
 ## Validation
 
