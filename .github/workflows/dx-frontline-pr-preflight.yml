@@ -1,0 +1,43 @@
+name: DX Frontline PR preflight (fork)
+
+on:
+  pull_request:
+    branches:
+      - feat/dx-frontline-pr-base
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs:
+  frontline-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out PR merge commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Reject new explicit any in changed Frontline lines
+        env:
+          DX_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/check-new-any.mjs "$DX_BASE_SHA"
