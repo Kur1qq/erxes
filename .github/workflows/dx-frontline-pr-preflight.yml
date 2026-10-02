@@ -37,6 +37,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify shared Git diff parser
+        run: node --test scripts/__tests__/git-diff-lines.test.mjs
+
+      - name: Verify new-any gate self-test
+        run: node scripts/check-new-any.mjs --self-test
+
       - name: Reject new explicit any in changed Frontline lines
         env:
           DX_BASE_SHA: ${{ github.event.pull_request.base.sha }}

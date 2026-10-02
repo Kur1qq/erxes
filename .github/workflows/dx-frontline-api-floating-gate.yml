@@ -37,6 +37,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Verify shared Git diff parser
+        run: node --test scripts/__tests__/git-diff-lines.test.mjs
+
+      - name: Verify new-any gate self-test
+        run: node scripts/check-new-any.mjs --self-test
+
       - name: Report all Frontline API floating Promises
         run: node scripts/report-frontline-api-floating-promises.mjs --report "$RUNNER_TEMP/frontline-api-floating-promises.json"
 

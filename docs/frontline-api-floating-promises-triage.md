@@ -56,6 +56,17 @@ changed-line gate has a blind spot: a type change elsewhere can make an
 unchanged line unsafe. It should not be described as proving the whole project
 is free of unhandled Promises.
 
+The explicit-any and floating-Promise gates share the zero-context Git diff
+parser in `scripts/git-diff-lines.mjs`. Both workflows run its regression tests
+and the explicit-any self-test; the API workflow also runs the floating-Promise
+self-test. Run these checks locally with:
+
+```bash
+node --test scripts/__tests__/git-diff-lines.test.mjs
+node scripts/check-new-any.mjs --self-test
+node scripts/check-new-floating-promises.mjs --self-test
+```
+
 Do not add `void` mechanically: it declares an intentional fire-and-forget
 call but does not handle a rejected Promise. Choose `await`, a rejection
 handler, or a documented best-effort policy according to the operation's
