@@ -1,9 +1,9 @@
-name: DX Frontline PR preflight (fork)
+name: DX Frontline API Promise gate experiment (fork)
 
 on:
   pull_request:
     branches:
-      - feat/dx-frontline-pr-base
+      - feat/dx-frontline-api-floating-pilot
     types:
       - opened
       - reopened
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  frontline-quality:
+  frontline-api-floating-gate:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -43,7 +43,22 @@ jobs:
       - name: Verify new-any gate self-test
         run: node scripts/check-new-any.mjs --self-test
 
-      - name: Reject new explicit any in changed Frontline lines
+      - name: Report all Frontline API floating Promises
+        run: node scripts/report-frontline-api-floating-promises.mjs --report "$RUNNER_TEMP/frontline-api-floating-promises.json"
+
+      - name: Upload finding locations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontline-api-floating-promises-gate
+          path: ${{ runner.temp }}/frontline-api-floating-promises.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Verify changed-line gate parser
+        run: node scripts/check-new-floating-promises.mjs --self-test
+
+      - name: Reject floating Promises on changed Frontline API lines
         env:
           DX_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: node scripts/check-new-any.mjs "$DX_BASE_SHA"
+        run: node scripts/check-new-floating-promises.mjs "$DX_BASE_SHA" "$RUNNER_TEMP/frontline-api-floating-promises.json"
